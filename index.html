@@ -47,7 +47,7 @@
           <!-- ROWBOAT -->
           <div class="col-sm-4">
             <label class="text-center w-100" style="cursor:pointer;">
-              <input type="radio" name="theme" id="theme1" value="theme1" class="d-none">
+              <input type="radio" name="theme" id="rowboatLake" value="rowboatLake" class="d-none">
               <img src="/images/rowboatLake.png" class="img-responsive mb-2" style="width:100%; border-radius:8px; border:2px solid #ccc;" alt="Lake">
               <div>Waves gently lapping at the lakeshore</div>
               <!-- <audio controls style="width:100px;">
@@ -58,7 +58,7 @@
           <!-- STONE CIRCLE -->
           <div class="col-sm-4">
             <label class="text-center w-100" style="cursor:pointer;">
-              <input type="radio" name="theme" id="theme2" value="theme2" class="d-none">
+              <input type="radio" name="theme" id="stoneCircle" value="stoneCircle" class="d-none">
               <img src="/images/stoneCircle.png" class="img-responsive mb-2" style="width:100%; border-radius:8px; border:2px solid #ccc;" alt="Stone Circle">
               <div>Nature sounds</div>
               <!-- <audio controls style="width:100px;">
@@ -69,7 +69,7 @@
           <!-- SHORELINE -->
           <div class="col-sm-4">
             <label class="text-center w-100" style="cursor:pointer;">
-              <input type="radio" name="theme" id="theme3" value="theme3" class="d-none">
+              <input type="radio" name="theme" id="rockyShore" value="rockyShore" class="d-none">
               <img src="/images/rockyShore.png" class="img-responsive mb-2" style="width:100%; border-radius:8px; border:2px solid #ccc;" alt="Rocky Shore">
               <div>Small ocean waves breaking on rocky shore</div>
               <!-- <audio controls style="width:100px;">
@@ -95,10 +95,10 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body text-center text-light">
-          <img id="modalImage" src="" alt="" style="max-width:300px; border-radius:12px; margin-bottom:20px;">
+          <!-- <img id="modalImage" src="" alt="" style="max-width:300px; border-radius:12px; margin-bottom:20px;"> -->
           <h2 id="timerDisplay" style="font-size:4rem; margin:20px 0;">25:00</h2>
           <audio id="modalAudio" controls style="width:200px; margin-bottom:20px;">
-            <source id="audioSource" src="" type="audio/mpeg">
+            <source id="audioSource" src="" type="">
           </audio>
           <div>
             <button id="startBtn" class="btn btn-success btn-lg">Start</button>
@@ -114,12 +114,12 @@
   <script>
 const themes = {
   rowboatLake: {
-    img: "/images/rowboatLake.png",
+    img: "/images/rowboatLake2.png",
     sound: "/soundscapes/rowboatLake.mp3"
   },
   stoneCircle: {
     img: "/images/stoneCircle.png",
-    sound: "/soundscapes/stoneCircle.mp3"
+    sound: "/soundscapes/stoneCircle.wav"
   },
   rockyShore: {
     img: "/images/rockyShore.png",
@@ -132,7 +132,7 @@ document.querySelectorAll('input[name="theme"]').forEach(input => {
     const selected = themes[this.value];
     // Set modal background and content
     document.getElementById('modalBg').style.backgroundImage = `url('${selected.img}')`;
-    document.getElementById('modalImage').src = selected.img;
+    // document.getElementById('modalImage').src = selected.img;
     document.getElementById('audioSource').src = selected.sound;
     document.getElementById('modalAudio').load();
     document.getElementById('timerDisplay').textContent = "25:00";
@@ -144,27 +144,58 @@ document.querySelectorAll('input[name="theme"]').forEach(input => {
 
 // Simple Pomodoro timer logic
 let timerInterval;
-document.getElementById('startBtn').addEventListener('click', function() {
-  let minutes = 25, seconds = 0;
-  document.getElementById('timerDisplay').textContent = "25:00";
-  clearInterval(timerInterval);
-  timerInterval = setInterval(() => {
-    if (minutes === 0 && seconds === 0) {
-      // Switch to break
-      minutes = 5; seconds = 0;
-      document.getElementById('timerDisplay').textContent = "05:00";
-      clearInterval(timerInterval);
-      // You can add break logic here
-      return;
-    }
-    if (seconds === 0) {
-      minutes--; seconds = 59;
-    } else {
-      seconds--;
-    }
-    document.getElementById('timerDisplay').textContent =
-      `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-  }, 1000);
+let timerRunning = false;
+
+const startBtn = document.getElementById('startBtn');
+
+startBtn.addEventListener('click', function() {
+  if (!timerRunning) {
+    // Start timer
+    let minutes = 25, seconds = 0;
+    document.getElementById('timerDisplay').textContent = "25:00";
+    clearInterval(timerInterval);
+
+    // Start audio playback and loop
+    const audio = document.getElementById('modalAudio');
+    const source = document.getElementById('audioSource');
+    source.src = themes[document.querySelector('input[name="theme"]:checked').value].sound;
+    audio.load();
+    audio.loop = true;
+    audio.currentTime = 0;
+    audio.play();
+
+    // Change button to Stop
+    startBtn.textContent = "Stop";
+    timerRunning = true;
+
+    timerInterval = setInterval(() => {
+      if (minutes === 0 && seconds === 0) {
+        // Switch to break
+        minutes = 5; seconds = 0;
+        document.getElementById('timerDisplay').textContent = "05:00";
+        clearInterval(timerInterval);
+        audio.loop = false;
+        audio.pause();
+        startBtn.textContent = "Start";
+        timerRunning = false;
+        return;
+      }
+      if (seconds === 0) {
+        minutes--; seconds = 59;
+      } else {
+        seconds--;
+      }
+      document.getElementById('timerDisplay').textContent =
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    }, 1000);
+  } else {
+    // Stop timer and audio
+    clearInterval(timerInterval);
+    document.getElementById('modalAudio').pause();
+    document.getElementById('modalAudio').loop = false;
+    startBtn.textContent = "Start";
+    timerRunning = false;
+  }
 });
 </script>
   
