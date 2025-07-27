@@ -28,12 +28,12 @@
   </nav>
 
     <div class="container-fluid text-center">
-      <img src="TimeSlice_lesser.png" class="img-responsive mb-5" style="display:inline, width= 40%;" alt="TimeSlice logo and tagline">
+      <img src="images/TimeSlice_lesser.png" class="img-responsive mb-5" style="display:inline, width= 40%;" alt="TimeSlice logo and tagline">
     </div>
 
     <div class="container-fluid text-center">
       <!-- <h3 class=" ">Personalize your session.</h3> -->
-      <h3 class=" ">Click on an image below to choose your experience.</h3>
+      <h5 class=" ">Click on an image below to choose your experience.</h5>
       <!-- <p class="mb-5">Background image, sound, and time intervals are up to you.</p> -->
 
       <!-- <button class="mb-5" href="setup.html" type="button" onclick="location.href='setup.html'">
@@ -41,59 +41,45 @@
       </button> -->
     </div>
 
-    <!-- <div class="container-fluid bg-3 text-center">    
-      <div class="row">
-        <div class="col-sm-4">
-          <img src="rowboatLake.png" class="img-responsive" style="width:100%" alt="Image">
+    <div class="container-fluid bg-3 text-center mb-5">
+      <form>
+        <div class="row">
+          <!-- ROWBOAT -->
+          <div class="col-sm-4">
+            <label class="text-center w-100" style="cursor:pointer;">
+              <input type="radio" name="theme" id="theme1" value="theme1" class="d-none">
+              <img src="/images/rowboatLake.png" class="img-responsive mb-2" style="width:100%; border-radius:8px; border:2px solid #ccc;" alt="Lake">
+              <div>Waves gently lapping at the lakeshore</div>
+              <!-- <audio controls style="width:100px;">
+                <source src="sound1.mp3" type="audio/mpeg">
+              </audio> -->
+            </label>
+          </div>
+          <!-- STONE CIRCLE -->
+          <div class="col-sm-4">
+            <label class="text-center w-100" style="cursor:pointer;">
+              <input type="radio" name="theme" id="theme2" value="theme2" class="d-none">
+              <img src="/images/stoneCircle.png" class="img-responsive mb-2" style="width:100%; border-radius:8px; border:2px solid #ccc;" alt="Stone Circle">
+              <div>Nature sounds</div>
+              <!-- <audio controls style="width:100px;">
+                <source src="sound2.mp3" type="audio/mpeg">
+              </audio> -->
+            </label>
+          </div>
+          <!-- SHORELINE -->
+          <div class="col-sm-4">
+            <label class="text-center w-100" style="cursor:pointer;">
+              <input type="radio" name="theme" id="theme3" value="theme3" class="d-none">
+              <img src="/images/rockyShore.png" class="img-responsive mb-2" style="width:100%; border-radius:8px; border:2px solid #ccc;" alt="Rocky Shore">
+              <div>Small ocean waves breaking on rocky shore</div>
+              <!-- <audio controls style="width:100px;">
+                <source src="sound3.mp3" type="audio/mpeg">
+              </audio> -->
+            </label>
+          </div>
         </div>
-        <div class="col-sm-4"> 
-          <img src="stoneCircle.png" class="img-responsive" style="width:100%" alt="Image">
-        </div>
-        <div class="col-sm-4"> 
-          <img src="rockyShore.png" class="img-responsive" style="width:100%" alt="Image">
-        </div>
-      </div>
-    </div> -->
-
-    <div class="container-fluid bg-3 text-center">
-  <form>
-    <div class="row">
-      <!-- ROWBOAT -->
-      <div class="col-sm-4">
-        <label class="text-center w-100" style="cursor:pointer;">
-          <input type="radio" name="theme" id="theme1" value="theme1" class="d-none">
-          <img src="/images/rowboatLake.png" class="img-responsive mb-2" style="width:100%; border-radius:8px; border:2px solid #ccc;" alt="Lake">
-          <div>Waves gently lapping at the lakeshore</div>
-          <audio controls style="width:100px;">
-            <!-- <source src="sound1.mp3" type="audio/mpeg"> -->
-          </audio>
-        </label>
-      </div>
-      <!-- STONE CIRCLE -->
-      <div class="col-sm-4">
-        <label class="text-center w-100" style="cursor:pointer;">
-          <input type="radio" name="theme" id="theme2" value="theme2" class="d-none">
-          <img src="/images/stoneCircle.png" class="img-responsive mb-2" style="width:100%; border-radius:8px; border:2px solid #ccc;" alt="Stone Circle">
-          <div>Nature sounds</div>
-          <audio controls style="width:100px;">
-            <!-- <source src="sound2.mp3" type="audio/mpeg"> -->
-          </audio>
-        </label>
-      </div>
-      <!-- SHORELINE -->
-      <div class="col-sm-4">
-        <label class="text-center w-100" style="cursor:pointer;">
-          <input type="radio" name="theme" id="theme3" value="theme3" class="d-none">
-          <img src="/images/rockyShore.png" class="img-responsive mb-2" style="width:100%; border-radius:8px; border:2px solid #ccc;" alt="Rocky Shore">
-          <div>Small ocean waves breaking on rocky shore</div>
-          <audio controls style="width:100px;">
-            <!-- <source src="sound3.mp3" type="audio/mpeg"> -->
-          </audio>
-        </label>
-      </div>
+      </form>
     </div>
-  </form>
-</div>
 
   <!-- Footer -->
   <footer class="container-fluid footer bg-light text-center">
