@@ -123,3 +123,7 @@ button {
 .form-check-label {
   color: #333 !important; /* Makes label text dark and readable */
 }
+
+.indent {
+  text-indent: 2em;
+}
