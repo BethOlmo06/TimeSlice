@@ -96,7 +96,7 @@
         </div>
         <div class="modal-body text-center text-light">
           <!-- <img id="modalImage" src="" alt="" style="max-width:300px; border-radius:12px; margin-bottom:20px;"> -->
-          <h2 id="timerDisplay" style="font-size:4rem; margin:20px 0;">25:00</h2>
+          <h2 id="timerDisplay" style="font-size:4rem; margin:20px 0;">2:00</h2>
           <audio id="modalAudio" controls style="width:200px; margin-bottom:20px;">
             <source id="audioSource" src="" type="">
           </audio>
@@ -145,39 +145,42 @@
     // Simple Pomodoro timer logic
     let timerInterval;
     let timerRunning = false;
+    let isWorkSession = true; // Track if we're in work or break
 
     const startBtn = document.getElementById('startBtn');
 
-    startBtn.addEventListener('click', function() {
-    if (!timerRunning) {
-      // Start timer
-      let minutes = 25, seconds = 0;
-      document.getElementById('timerDisplay').textContent = "25:00";
+    function startTimer(minutes, seconds) {
+      timerRunning = true;
+      startBtn.textContent = "Stop";
+      document.getElementById('timerDisplay').textContent =
+        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
       clearInterval(timerInterval);
 
-      // Start audio playback and loop
-      const audio = document.getElementById('modalAudio');
-      const source = document.getElementById('audioSource');
-      source.src = themes[document.querySelector('input[name="theme"]:checked').value].sound;
-      audio.load();
-      audio.loop = true;
-      audio.currentTime = 0;
-      audio.play();
-
-      // Change button to Stop
-      startBtn.textContent = "Stop";
-      timerRunning = true;
-
       timerInterval = setInterval(() => {
-        if (minutes === 0 && seconds === 0) {
-          // Switch to break
-          minutes = 5; seconds = 0;
-          document.getElementById('timerDisplay').textContent = "05:00";
+        if (!timerRunning) {
           clearInterval(timerInterval);
-          audio.loop = false;
-          audio.pause();
-          startBtn.textContent = "Start";
-          timerRunning = false;
+          return;
+        }
+        if (minutes === 0 && seconds === 0) {
+          clearInterval(timerInterval);
+          const audio = document.getElementById('modalAudio');
+          if (isWorkSession) {
+            // Work session ended, start break
+            isWorkSession = false;
+            startBtn.textContent = "Stop";
+            audio.loop = false;
+            audio.pause();
+            startTimer(5, 0); // Start 5-minute break
+          } else {
+            // Break ended, start work session again
+            isWorkSession = true;
+            startBtn.textContent = "Stop";
+            // Start audio for work session
+            audio.loop = true;
+            audio.currentTime = 0;
+            audio.play();
+            startTimer(25, 0); // Start 25-minute work session
+          }
           return;
         }
         if (seconds === 0) {
@@ -188,15 +191,30 @@
         document.getElementById('timerDisplay').textContent =
           `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
       }, 1000);
+    }
+
+    startBtn.addEventListener('click', function() {
+    const audio = document.getElementById('modalAudio');
+    if (!timerRunning) {
+      if (isWorkSession) {
+        // Start work session and audio
+        audio.loop = true;
+        audio.currentTime = 0;
+        audio.play();
+        startTimer(25, 0);
+      } else {
+        // Start break (no audio)
+        startTimer(5, 0);
+      }
     } else {
       // Stop timer and audio
-      clearInterval(timerInterval);
-      document.getElementById('modalAudio').pause();
-      document.getElementById('modalAudio').loop = false;
-      startBtn.textContent = "Start";
       timerRunning = false;
-    }
-  });
+      clearInterval(timerInterval);
+      audio.pause();
+      audio.loop = false;
+      startBtn.textContent = "Start";
+  }
+});
   </script>
   
 </body>
