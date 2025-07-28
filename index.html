@@ -22,6 +22,7 @@
           <!-- <li class="nav-item"><a class="nav-link" href="setup.html"><strong>Get Started</strong></a></li> -->
           <li class="nav-item"><a class="nav-link" href="writeup.html"><strong>The Writeup</strong></a></li>
           <!-- <li class="nav-item"><a class="nav-link" href="code.html"><strong>The Code</strong></a></li> -->
+           <li class="nav-item"><a class="nav-link" href="#" id="demoLink"><strong>Demo</strong></a></li>
         </ul>
       </div>
     </div>
@@ -145,10 +146,30 @@
     // Simple Pomodoro timer logic
     let timerInterval;
     let timerRunning = false;
-    let isWorkSession = true; // Track if we're in work or break
+    let isWorkSession = true;
+    let demoMode = false;
 
     const startBtn = document.getElementById('startBtn');
 
+    // Theme selection logic
+    document.querySelectorAll('input[name="theme"]').forEach(input => {
+      input.addEventListener('change', function() {
+        demoMode = false; // Reset demo mode if user picks a theme
+        isWorkSession = true;
+        timerRunning = false;
+        clearInterval(timerInterval);
+        startBtn.textContent = "Start";
+        const selected = themes[this.value];
+        document.getElementById('modalBg').style.backgroundImage = `url('${selected.img}')`;
+        document.getElementById('audioSource').src = selected.sound;
+        document.getElementById('modalAudio').load();
+        document.getElementById('timerDisplay').textContent = "25:00";
+        const modal = new bootstrap.Modal(document.getElementById('timerModal'));
+        modal.show();
+      });
+    });
+
+    // Timer logic
     function startTimer(minutes, seconds) {
       timerRunning = true;
       startBtn.textContent = "Stop";
@@ -167,19 +188,16 @@
           if (isWorkSession) {
             // Work session ended, start break
             isWorkSession = false;
-            startBtn.textContent = "Stop";
             audio.loop = false;
             audio.pause();
-            startTimer(5, 0); // Start 5-minute break
+            startTimer(demoMode ? 0 : 5, demoMode ? 30 : 0); // 5:00 or 0:30 break
           } else {
             // Break ended, start work session again
             isWorkSession = true;
-            startBtn.textContent = "Stop";
-            // Start audio for work session
             audio.loop = true;
             audio.currentTime = 0;
             audio.play();
-            startTimer(25, 0); // Start 25-minute work session
+            startTimer(demoMode ? 0 : 25, demoMode ? 30 : 0); // 25:00 or 0:30 work
           }
           return;
         }
@@ -193,27 +211,47 @@
       }, 1000);
     }
 
+    // Start/Stop button logic
     startBtn.addEventListener('click', function() {
-    const audio = document.getElementById('modalAudio');
-    if (!timerRunning) {
-      if (isWorkSession) {
-        // Start work session and audio
-        audio.loop = true;
-        audio.currentTime = 0;
-        audio.play();
-        startTimer(25, 0);
+      const audio = document.getElementById('modalAudio');
+      if (!timerRunning) {
+        if (isWorkSession) {
+          audio.loop = true;
+          audio.currentTime = 0;
+          audio.play();
+          startTimer(demoMode ? 0 : 25, demoMode ? 30 : 0);
+        } else {
+          startTimer(demoMode ? 0 : 5, demoMode ? 30 : 0);
+        }
       } else {
-        // Start break (no audio)
-        startTimer(5, 0);
+        timerRunning = false;
+        clearInterval(timerInterval);
+        audio.pause();
+        audio.loop = false;
+        startBtn.textContent = "Start";
       }
-    } else {
-      // Stop timer and audio
-      timerRunning = false;
-      clearInterval(timerInterval);
-      audio.pause();
-      audio.loop = false;
-      startBtn.textContent = "Start";
-  }
+    });
+
+    // Demo link logic
+    document.getElementById('demoLink').addEventListener('click', function(e) {
+  e.preventDefault();
+  demoMode = true;
+  isWorkSession = true;
+  timerRunning = false;
+  clearInterval(timerInterval);
+  startBtn.textContent = "Stop";
+  document.getElementById('modalBg').style.backgroundImage = "url('/images/rowboatLake2.png')";
+  document.getElementById('audioSource').src = "/soundscapes/rowboatLake.mp3";
+  document.getElementById('modalAudio').load();
+  document.getElementById('timerDisplay').textContent = "00:30";
+  const modal = new bootstrap.Modal(document.getElementById('timerModal'));
+  modal.show();
+  // Start demo timer automatically
+  const audio = document.getElementById('modalAudio');
+  audio.loop = true;
+  audio.currentTime = 0;
+  audio.play();
+  startTimer(0, 30);
 });
   </script>
   
